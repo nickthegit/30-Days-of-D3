@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
   <meta charset="utf-8">
   <style>
@@ -8,15 +9,19 @@
       color: #fff;
       background-color: #6cb0e0;
     }
-    h1, h2 {
+
+    h1,
+    h2 {
       text-transform: uppercase;
       text-align: center;
     }
+
     h1 {
       font-size: 48px;
       margin-top: 30px;
       margin-bottom: 0px;
     }
+
     h2 {
       font-size: 32px;
       color: #888;
@@ -28,10 +33,12 @@
       margin: 0 auto;
       margin-top: 30px;
     }
+
     .background {
       fill: #6cb0e0;
       pointer-events: all;
     }
+
     .countries {
       fill: #b0d0ab;
       stroke: #6cb0e0;
@@ -40,6 +47,7 @@
       stroke-linejoin: round;
       vector-effect: non-scaling-stroke;
     }
+
     .airports {
       fill: #036;
       stroke: #6cb0e0;
@@ -48,10 +56,12 @@
       stroke-linejoin: round;
       vector-effect: non-scaling-stroke;
     }
+
     .plane {
       fill: #fff;
       stroke-width: 0;
     }
+
     .route {
       fill: none;
       /*stroke: #fff;
@@ -59,10 +69,11 @@
     }
   </style>
 </head>
+
 <body>
-  <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <script src="//d3js.org/topojson.v1.min.js"></script>
-  <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-queue/3.0.7/d3-queue.min.js"></script>
 
   <div class="wrapper">
     <h1>Flights Across the World</h1>
@@ -70,8 +81,8 @@
   </div>
 
   <script>
-  // From http://www.tnoda.com/blog/2014-04-02
-  var OD_PAIRS = [
+    // From http://www.tnoda.com/blog/2014-04-02
+    var OD_PAIRS = [
       ["NRT", "JFK"],
       ["SFO", "NRT"],
       ["LAX", "HNL"],
@@ -124,11 +135,11 @@
     var width = 940;
     var height = 620;
 
-    var projection = d3.geo.mercator()
+    var projection = d3.geoMercator()
       .scale(110)
-      .translate([width / 2, height/ 2]);
+      .translate([width / 2, height / 2]);
 
-    var path = d3.geo.path()
+    var path = d3.geoPath()
       .pointRadius(2)
       .projection(projection);
 
@@ -151,15 +162,15 @@
       plane.transition()
         .duration(l * 50)
         .attrTween("transform", delta(plane, route.node())) // move plane to co
-        .each("end", function() { route.remove(); })
+        .each("end", function () { route.remove(); })
         .remove();
     }
 
     function delta(plane, path) {
       var l = path.getTotalLength();
       var plane = plane;
-      return function(i) {
-        return function(t) {
+      return function (i) {
+        return function (t) {
           var p = path.getPointAtLength(t * l); // return coordinate
           var t2 = Math.min(t + 0.05, 1);
           var p2 = path.getPointAtLength(t2 * l);
@@ -175,7 +186,7 @@
     function fly(origin, destination) {
       // Draw flight path
       var route = svg.append("path")
-        .datum({type: "LineString", coordinates: [airportMap[origin], airportMap[destination]]})
+        .datum({ type: "LineString", coordinates: [airportMap[origin], airportMap[destination]] })
         .attr("class", "route")
         .attr("d", path);
 
@@ -211,7 +222,7 @@
         .data(geos)
         .enter()
         .append("path")
-        .attr("id", function(d) { return d.id; })
+        .attr("id", function (d) { return d.id; })
         .attr("d", path);
 
       for (g in geos) {
@@ -219,7 +230,7 @@
       }
 
       var i = 0;
-      setInterval(function() {
+      setInterval(function () {
         if (i > OD_PAIRS.length - 1) {
           i = 0;
         }
@@ -230,7 +241,7 @@
     }
 
     var queue = d3.queue();
-    queue.defer(d3.json, "countries.topo.json")
+    queue.defer(d3.json, "./countries.topo.json")
       .defer(d3.json, "airports.topo.json")
       .await(loaded);
   </script>
